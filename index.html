@@ -3,21 +3,87 @@
 <head>
   <title>Знакомство Аркан</title>
   <meta charset="UTF-8" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       background: #111;
       color: white;
       font-family: Arial;
-      text-align: center;
-      padding-top: 100px;
+      padding: 20px;
     }
-    h1 {
-      font-size: 40px;
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>Знакомство Аркан 🔮</h1>
-  <p>Mini App запущен</p>
+
+<h2>Регистрация 🔮</h2>
+
+<input type="text" id="name" placeholder="Твоё имя">
+<input type="date" id="birthdate">
+<button onclick="generate()">Создать профиль</button>
+
+<div id="result"></div>
+
+<script>
+function getZodiac(day, month) {
+  const zodiac = [
+    ["Козерог", 20], ["Водолей", 19], ["Рыбы", 20],
+    ["Овен", 20], ["Телец", 21], ["Близнецы", 21],
+    ["Рак", 23], ["Лев", 23], ["Дева", 23],
+    ["Весы", 23], ["Скорпион", 22], ["Стрелец", 22],
+    ["Козерог", 31]
+  ];
+  return day < zodiac[month][1] ? zodiac[month][0] : zodiac[month+1][0];
+}
+
+function getArcana(day) {
+  return (day % 22) + 1;
+}
+
+function getChinese(year) {
+  const animals = ["Обезьяна","Петух","Собака","Свинья","Крыса","Бык","Тигр","Кролик","Дракон","Змея","Лошадь","Коза"];
+  return animals[year % 12];
+}
+
+function generate() {
+  const name = document.getElementById("name").value;
+  const birthdate = document.getElementById("birthdate").value;
+
+  if (!name || !birthdate) {
+    alert("Заполни все поля");
+    return;
+  }
+
+  const date = new Date(birthdate);
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  const zodiac = getZodiac(day, month);
+  const arcana = getArcana(day);
+  const chinese = getChinese(year);
+
+  document.getElementById("result").innerHTML = `
+    <div class="card">
+      <h3>${name}</h3>
+      <p>♈ Знак зодиака: ${zodiac}</p>
+      <p>🎴 Аркан: ${arcana}</p>
+      <p>🐉 Год: ${chinese}</p>
+    </div>
+  `;
+}
+</script>
+
 </body>
 </html>
