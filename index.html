@@ -37,12 +37,27 @@
 
 <script>
 
-// функция редукции (если число > 22 — складываем цифры)
 function reduceTo22(num) {
   while (num > 22) {
     num = num.toString().split('').reduce((a, b) => Number(a) + Number(b), 0);
   }
   return num;
+}
+
+function getZodiac(day, month) {
+  const zodiac = [
+    ["Козерог", 19], ["Водолей", 18], ["Рыбы", 20],
+    ["Овен", 19], ["Телец", 20], ["Близнецы", 20],
+    ["Рак", 22], ["Лев", 22], ["Дева", 22],
+    ["Весы", 22], ["Скорпион", 21], ["Стрелец", 21],
+    ["Козерог", 31]
+  ];
+  return day <= zodiac[month-1][1] ? zodiac[month-1][0] : zodiac[month][0];
+}
+
+function getChinese(year) {
+  const animals = ["Крыса","Бык","Тигр","Кролик","Дракон","Змея","Лошадь","Коза","Обезьяна","Петух","Собака","Свинья"];
+  return animals[(year - 4) % 12];
 }
 
 function generate() {
@@ -59,29 +74,23 @@ function generate() {
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
-  // 🔹 Левый угол (день)
+  // Углы
   let dayArcana = reduceTo22(day);
-
-  // 🔹 Верхний угол (месяц)
   let monthArcana = month;
+  let yearArcana = reduceTo22(year.toString().split('').reduce((a, b) => Number(a) + Number(b), 0));
 
-  // 🔹 Правый угол (год)
-  let yearArcana = year.toString()
-    .split('')
-    .reduce((a, b) => Number(a) + Number(b), 0);
-  yearArcana = reduceTo22(yearArcana);
+  let karmic = reduceTo22(dayArcana + monthArcana + yearArcana);
+  let core = reduceTo22(dayArcana + monthArcana + yearArcana + karmic);
 
-  // 🔹 Нижний (кармический)
-  let karmic = dayArcana + monthArcana + yearArcana;
-  karmic = reduceTo22(karmic);
-
-  // 🔥 Ядро личности
-  let core = dayArcana + monthArcana + yearArcana + karmic;
-  core = reduceTo22(core);
+  let zodiac = getZodiac(day, month);
+  let chinese = getChinese(year);
 
   document.getElementById("result").innerHTML = `
     <div class="card">
       <h3>${name}</h3>
+      <p>♈ Знак зодиака: ${zodiac}</p>
+      <p>🐉 Год: ${chinese}</p>
+      <hr>
       <p>🎴 Аркан личности: ${dayArcana}</p>
       <p>🔮 Ядро личности: ${core}</p>
     </div>
